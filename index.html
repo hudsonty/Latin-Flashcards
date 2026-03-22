@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latin Vocab</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+–bg: #f7f6f3;
+–card-bg: #ffffff;
+–text-primary: #111110;
+–text-secondary: #888884;
+–text-light: #bbb;
+–accent: #2d5be3;
+–green: #1a7f4b;
+–red: #c0392b;
+–border: #e8e7e3;
+–shadow: 0 2px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+–shadow-hover: 0 8px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+}
+
+body {
+background: var(–bg);
+color: var(–text-primary);
+font-family: ‘DM Sans’, sans-serif;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 3rem 1.5rem 4rem;
+}
+
+header {
+width: 100%;
+max-width: 480px;
+display: flex;
+justify-content: space-between;
+align-items: flex-end;
+margin-bottom: 2.5rem;
+}
+
+header h1 {
+font-family: ‘DM Serif Display’, serif;
+font-size: 1.5rem;
+font-weight: 400;
+letter-spacing: -0.01em;
+color: var(–text-primary);
+}
+
+.header-right {
+font-size: 0.8rem;
+color: var(–text-secondary);
+font-weight: 300;
+}
+
+.direction-btn {
+background: var(–card-bg);
+border: 1px solid var(–border);
+color: var(–text-secondary);
+font-family: ‘DM Sans’, sans-serif;
+font-size: 0.75rem;
+font-weight: 500;
+padding: 0.4rem 0.85rem;
+border-radius: 99px;
+cursor: pointer;
+transition: all 0.15s;
+white-space: nowrap;
+}
+
+.direction-btn:hover {
+border-color: var(–accent);
+color: var(–accent);
+background: #f0f4ff;
+}
+
+.progress-track {
+width: 100%;
+max-width: 480px;
+height: 2px;
+background: var(–border);
+border-radius: 99px;
+margin-bottom: 3rem;
+overflow: hidden;
+}
+
+.progress-fill {
+height: 100%;
+background: var(–accent);
+border-radius: 99px;
+transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+width: 0%;
+}
+
+.card-wrapper {
+width: 100%;
+max-width: 480px;
+margin-bottom: 1.5rem;
+}
+
+.card {
+width: 100%;
+min-height: 240px;
+background: var(–card-bg);
+border-radius: 16px;
+border: 1px solid var(–border);
+box-shadow: var(–shadow);
+cursor: pointer;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 2.5rem 2rem;
+position: relative;
+transition: box-shadow 0.2s, transform 0.15s;
+user-select: none;
+-webkit-tap-highlight-color: transparent;
+}
+
+.card:hover { box-shadow: var(–shadow-hover); transform: translateY(-1px); }
+.card:active { transform: translateY(0); box-shadow: var(–shadow); }
+
+.card-side-label {
+position: absolute;
+top: 1.1rem;
+left: 1.4rem;
+font-size: 0.68rem;
+font-weight: 500;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(–text-light);
+}
+
+.card-hint {
+position: absolute;
+bottom: 1.1rem;
+right: 1.4rem;
+font-size: 0.7rem;
+color: var(–text-light);
+font-weight: 300;
+}
+
+.card-content {
+text-align: center;
+transition: opacity 0.12s, transform 0.12s;
+}
+
+.card-content.hiding {
+opacity: 0;
+transform: scale(0.96);
+}
+
+.word-main {
+font-family: ‘DM Serif Display’, serif;
+font-size: clamp(2rem, 7vw, 2.8rem);
+line-height: 1.15;
+color: var(–text-primary);
+margin-bottom: 0.5rem;
+}
+
+.word-main.is-latin { font-style: italic; }
+
+.word-sub {
+font-size: 0.82rem;
+color: var(–text-secondary);
+font-weight: 300;
+font-style: italic;
+font-family: ‘DM Serif Display’, serif;
+}
+
+.score-row {
+width: 100%;
+max-width: 480px;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 0.75rem;
+margin-bottom: 2rem;
+opacity: 0;
+pointer-events: none;
+transform: translateY(6px);
+transition: opacity 0.25s, transform 0.25s;
+}
+
+.score-row.visible { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+.score-btn {
+padding: 0.75rem;
+border-radius: 10px;
+border: 1px solid var(–border);
+background: var(–card-bg);
+font-family: ‘DM Sans’, sans-serif;
+font-size: 0.85rem;
+font-weight: 500;
+cursor: pointer;
+transition: all 0.15s;
+color: var(–text-secondary);
+}
+
+.score-btn.btn-correct:hover { background: #f0faf5; border-color: #a8dfc1; color: var(–green); }
+.score-btn.btn-wrong:hover   { background: #fdf3f2; border-color: #f0b8b3; color: var(–red); }
+
+.nav-row {
+width: 100%;
+max-width: 480px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 2.5rem;
+}
+
+.nav-btn {
+background: none;
+border: none;
+padding: 0.5rem 0.75rem;
+cursor: pointer;
+color: var(–text-secondary);
+font-family: ‘DM Sans’, sans-serif;
+font-size: 0.85rem;
+font-weight: 500;
+border-radius: 8px;
+transition: all 0.15s;
+display: flex;
+align-items: center;
+gap: 0.4rem;
+}
+
+.nav-btn:hover:not(:disabled) { background: var(–border); color: var(–text-primary); }
+.nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+.nav-counter {
+font-size: 0.82rem;
+color: var(–text-secondary);
+letter-spacing: 0.04em;
+}
+
+.bottom-row {
+width: 100%;
+max-width: 480px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 0.6rem;
+flex-wrap: wrap;
+margin-bottom: 2.5rem;
+}
+
+.stats-mini {
+display: flex;
+gap: 1.2rem;
+font-size: 0.78rem;
+color: var(–text-secondary);
+}
+
+.stat-item { display: flex; align-items: center; gap: 0.35rem; }
+.stat-dot { width: 7px; height: 7px; border-radius: 50%; }
+.stat-dot.green { background: var(–green); }
+.stat-dot.red   { background: var(–red); }
+
+.shuffle-btn {
+background: none;
+border: 1px solid var(–border);
+color: var(–text-secondary);
+font-family: ‘DM Sans’, sans-serif;
+font-size: 0.8rem;
+font-weight: 500;
+padding: 0.45rem 0.9rem;
+border-radius: 8px;
+cursor: pointer;
+transition: all 0.15s;
+display: flex;
+align-items: center;
+gap: 0.35rem;
+}
+
+.shuffle-btn:hover { background: var(–card-bg); border-color: #ccc; color: var(–text-primary); box-shadow: var(–shadow); }
+
+.shuffle-btn.active {
+background: #fef0ee;
+border-color: #f0b8b3;
+color: var(–red);
+}
+
+.shuffle-btn.active:hover {
+background: #fce8e6;
+border-color: var(–red);
+box-shadow: none;
+}
+
+.list-toggle {
+background: none;
+border: none;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 0.78rem;
+color: var(–text-light);
+cursor: pointer;
+letter-spacing: 0.06em;
+text-transform: uppercase;
+padding: 0;
+margin-bottom: 1rem;
+transition: color 0.15s;
+}
+
+.list-toggle:hover { color: var(–text-secondary); }
+
+.word-list {
+display: none;
+width: 100%;
+max-width: 480px;
+background: var(–card-bg);
+border: 1px solid var(–border);
+border-radius: 12px;
+overflow: hidden;
+box-shadow: var(–shadow);
+}
+
+.word-list.open { display: block; }
+
+.word-list table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+
+.word-list th {
+padding: 0.65rem 1.1rem;
+text-align: left;
+font-weight: 500;
+font-size: 0.7rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(–text-light);
+border-bottom: 1px solid var(–border);
+}
+
+.word-list td {
+padding: 0.55rem 1.1rem;
+border-bottom: 1px solid var(–border);
+color: var(–text-primary);
+}
+
+.word-list tr:last-child td { border-bottom: none; }
+.word-list tr:hover td { background: var(–bg); }
+
+.word-list td:first-child {
+font-family: ‘DM Serif Display’, serif;
+font-style: italic;
+font-size: 0.95rem;
+}
+
+.pill {
+display: inline-flex;
+align-items: center;
+font-size: 0.7rem;
+font-weight: 500;
+padding: 0.18rem 0.5rem;
+border-radius: 99px;
+}
+
+.pill.known  { background: #eaf7f0; color: var(–green); }
+.pill.review { background: #fef0ee; color: var(–red); }
+.pill.unseen { background: var(–bg); color: var(–text-light); }
+
+@keyframes fade-up {
+from { opacity: 0; transform: translateY(8px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+.entering { animation: fade-up 0.18s ease both; }
+</style>
+
+</head>
+<body>
+
+<header>
+  <h1>Vocabula Latina</h1>
+  <button class="direction-btn" id="directionBtn" onclick="toggleDirection()">Latin → English</button>
+</header>
+
+<div class="progress-track">
+  <div class="progress-fill" id="progressFill"></div>
+</div>
+
+<div class="card-wrapper">
+  <div class="card" id="card" onclick="flipCard()">
+    <div class="card-side-label" id="sideLabel">Latin</div>
+    <div class="card-content" id="cardContent">
+      <div class="word-main is-latin" id="wordMain">—</div>
+      <div class="word-sub" id="wordSub"></div>
+    </div>
+    <div class="card-hint" id="cardHint">tap to reveal</div>
+  </div>
+</div>
+
+<div class="score-row" id="scoreRow">
+  <button class="score-btn btn-wrong" onclick="markCard(false)">Still learning</button>
+  <button class="score-btn btn-correct" onclick="markCard(true)">Got it ✓</button>
+</div>
+
+<div class="nav-row">
+  <button class="nav-btn" id="prevBtn" onclick="prevCard()">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Prev
+  </button>
+  <div class="nav-counter" id="counter">1 / 19</div>
+  <button class="nav-btn" id="nextBtn" onclick="nextCard()">
+    Next
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2L10 7L5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</div>
+
+<div class="bottom-row">
+  <div class="stats-mini">
+    <div class="stat-item"><div class="stat-dot green"></div><span id="knownCount">0</span> known</div>
+    <div class="stat-item"><div class="stat-dot red"></div><span id="reviewCount">0</span> review</div>
+  </div>
+  <button class="shuffle-btn" onclick="shuffleCards()">
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 4h7.5M1 9h7.5M9 2l3 2-3 2M9 7l3 2-3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Shuffle
+  </button>
+  <button class="shuffle-btn" id="reviewModeBtn" onclick="toggleReviewMode()">
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1a5.5 5.5 0 100 11A5.5 5.5 0 006.5 1zM6.5 4v3l2 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Review weak
+  </button>
+</div>
+
+<button class="list-toggle" onclick="toggleList()" id="listToggle">All words ↓</button>
+
+<div class="word-list" id="wordList">
+  <table>
+    <thead><tr><th>Latin</th><th>English</th><th>Status</th></tr></thead>
+    <tbody id="wordListBody"></tbody>
+  </table>
+</div>
+
+<script>
+const vocab = [
+  { latin: "in palaеstrā",        english: "in the palaestra, in the exercise area" },
+  { latin: "discum",              english: "discus" },
+  { latin: "thermās",             english: "baths" },
+  { latin: "ferēbat",             english: "was carrying" },
+  { latin: "āthlētās",            english: "athletes" },
+  { latin: "statuās",             english: "statues" },
+  { latin: "posuērunt",           english: "have put up" },
+  { latin: "porticus",            english: "colonnade" },
+  { latin: "offerēbant",          english: "were offering" },
+  { latin: "in mediā turbā",      english: "in the middle of the crowd" },
+  { latin: "āthlēta ille",        english: "that athlete" },
+  { latin: "novum",               english: "new" },
+  { latin: "longē",               english: "a long way, far" },
+  { latin: "per aurās ēvolāvit",  english: "flew through the air" },
+  { latin: "invēnit",             english: "found" },
+  { latin: "rediit",              english: "went back" },
+  { latin: "nōn accēpit",         english: "did not accept" },
+  { latin: "trādidit",            english: "handed over" },
+  { latin: "nāsum frāctum",       english: "a broken nose" },
+];
+
+let deck = [...vocab];
+let current = 0;
+let isFlipped = false;
+let statuses = {};
+let latinFirst = true; // true = Latin→English, false = English→Latin
+
+let reviewMode = false;
+
+function toggleReviewMode() {
+  const weak = vocab.filter(w => statuses[w.latin] === 'review');
+  if (!reviewMode) {
+    if (weak.length === 0) {
+      alert('No words marked as "Still learning" yet. Mark some cards first!');
+      return;
+    }
+    reviewMode = true;
+    deck = [...weak];
+    document.getElementById('reviewModeBtn').classList.add('active');
+    document.getElementById('reviewModeBtn').innerHTML = `
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 2l9 9M11 2l-9 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      Exit review`;
+  } else {
+    reviewMode = false;
+    deck = [...vocab];
+    document.getElementById('reviewModeBtn').classList.remove('active');
+    document.getElementById('reviewModeBtn').innerHTML = `
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1a5.5 5.5 0 100 11A5.5 5.5 0 006.5 1zM6.5 4v3l2 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Review weak`;
+  }
+  current = 0;
+  render(true);
+}
+
+function toggleDirection() {
+  latinFirst = !latinFirst;
+  document.getElementById('directionBtn').textContent = latinFirst ? 'Latin → English' : 'English → Latin';
+  render(false);
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function applyContent(latin, english, flipped) {
+  const main = document.getElementById('wordMain');
+  const sub  = document.getElementById('wordSub');
+  const label = document.getElementById('sideLabel');
+  const hint  = document.getElementById('cardHint');
+  const content = document.getElementById('cardContent');
+
+  const showLatinFirst = latinFirst ? !flipped : flipped;
+
+  if (showLatinFirst) {
+    label.textContent = 'Latin';
+    main.textContent = latin;
+    main.className = 'word-main is-latin';
+    sub.textContent = flipped ? english : '';
+    hint.style.display = flipped ? 'none' : '';
+    if (!flipped) hint.textContent = 'tap to reveal';
+  } else {
+    label.textContent = 'English';
+    main.textContent = english;
+    main.className = 'word-main';
+    sub.textContent = flipped ? latin : '';
+    hint.style.display = flipped ? 'none' : '';
+    if (!flipped) hint.textContent = 'tap to reveal';
+  }
+
+  // Trigger entering animation
+  content.classList.remove('entering');
+  void content.offsetWidth;
+  content.classList.add('entering');
+}
+
+function transitionContent(latin, english, flipped) {
+  const content = document.getElementById('cardContent');
+  content.classList.add('hiding');
+  setTimeout(() => {
+    content.classList.remove('hiding');
+    applyContent(latin, english, flipped);
+  }, 130);
+}
+
+function render(animate) {
+  const w = deck[current];
+  isFlipped = false;
+  document.getElementById('scoreRow').classList.remove('visible');
+  document.getElementById('counter').textContent = `${current + 1} / ${deck.length}`;
+  document.getElementById('prevBtn').disabled = current === 0;
+  document.getElementById('nextBtn').disabled = current === deck.length - 1;
+
+  if (animate) {
+    transitionContent(w.latin, w.english, false);
+  } else {
+    applyContent(w.latin, w.english, false);
+  }
+
+  updateStats();
+  renderWordList();
+  updateProgress();
+}
+
+function flipCard() {
+  const w = deck[current];
+  isFlipped = !isFlipped;
+  transitionContent(w.latin, w.english, isFlipped);
+  if (isFlipped) {
+    document.getElementById('scoreRow').classList.add('visible');
+  } else {
+    document.getElementById('scoreRow').classList.remove('visible');
+  }
+}
+
+function nextCard() { if (current < deck.length - 1) { current++; render(true); } }
+function prevCard() { if (current > 0) { current--; render(true); } }
+
+function shuffleCards() { shuffle(deck); current = 0; render(true); }
+
+function markCard(known) {
+  statuses[deck[current].latin] = known ? 'known' : 'review';
+  updateStats(); renderWordList(); updateProgress();
+  setTimeout(() => { if (current < deck.length - 1) nextCard(); }, 200);
+}
+
+function updateStats() {
+  document.getElementById('knownCount').textContent = Object.values(statuses).filter(v => v === 'known').length;
+  document.getElementById('reviewCount').textContent = Object.values(statuses).filter(v => v === 'review').length;
+}
+
+function updateProgress() {
+  document.getElementById('progressFill').style.width = (Object.keys(statuses).length / deck.length * 100) + '%';
+}
+
+function renderWordList() {
+  document.getElementById('wordListBody').innerHTML = vocab.map(w => {
+    const s = statuses[w.latin];
+    const cls = s === 'known' ? 'known' : s === 'review' ? 'review' : 'unseen';
+    const lbl = s === 'known' ? '✓ Known' : s === 'review' ? '↻ Review' : '—';
+    return `<tr><td>${w.latin}</td><td>${w.english}</td><td><span class="pill ${cls}">${lbl}</span></td></tr>`;
+  }).join('');
+}
+
+function toggleList() {
+  const list = document.getElementById('wordList');
+  const btn = document.getElementById('listToggle');
+  list.classList.toggle('open');
+  btn.textContent = list.classList.contains('open') ? 'All words ↑' : 'All words ↓';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
+  if (e.key === 'ArrowRight') nextCard();
+  if (e.key === 'ArrowLeft') prevCard();
+  if (e.key === 'y' || e.key === 'Y') { if (isFlipped) markCard(true); }
+  if (e.key === 'n' || e.key === 'N') { if (isFlipped) markCard(false); }
+});
+
+render(false);
+</script>
+
+</body>
+</html>
