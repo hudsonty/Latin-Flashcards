@@ -324,9 +324,19 @@ color: var(–text-secondary);
 }
 
 .stat-item { display: flex; align-items: center; gap: 0.4rem; }
-.stat-dot { width: 7px; height: 7px; border-radius: 50%; }
-.stat-dot.green { background: var(–green); box-shadow: 0 0 6px var(–green); }
-.stat-dot.red   { background: var(–red);   box-shadow: 0 0 6px var(–red); }
+.stat-dot {
+width: 8px; height: 8px;
+border-radius: 50%;
+flex-shrink: 0;
+}
+.stat-dot.green {
+background: #30d158;
+box-shadow: 0 0 8px 2px #30d158, 0 0 16px #30d158;
+}
+.stat-dot.red {
+background: #ff453a;
+box-shadow: 0 0 8px 2px #ff453a, 0 0 16px #ff453a;
+}
 
 .action-btn {
 background: rgba(255,255,255,0.07);
