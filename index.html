@@ -10,104 +10,171 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
---bg: #000000;
---card-bg: #111111;
-–text-primary: #111110;
-–text-secondary: #888884;
-–text-light: #bbb;
-–accent: #2d5be3;
-–green: #1a7f4b;
-–red: #c0392b;
-–border: #e8e7e3;
-–shadow: 0 2px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
-–shadow-hover: 0 8px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+–glass-bg: rgba(255,255,255,0.07);
+–glass-border: rgba(255,255,255,0.18);
+–glass-shine: rgba(255,255,255,0.25);
+–glass-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.3);
+–glass-shadow-hover: 0 16px 48px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.4);
+–text-primary: rgba(255,255,255,0.95);
+–text-secondary: rgba(255,255,255,0.5);
+–text-light: rgba(255,255,255,0.3);
+–green: #30d158;
+–red: #ff453a;
+–blue: #0a84ff;
 }
 
 body {
-background: var(–bg);
-color: var(–text-primary);
-font-family: ‘DM Sans’, sans-serif;
 min-height: 100vh;
 display: flex;
 flex-direction: column;
 align-items: center;
-padding: 3rem 1.5rem 4rem;
+padding: 3rem 1.5rem 5rem;
+font-family: ‘DM Sans’, sans-serif;
+color: var(–text-primary);
+background: #000;
+overflow-x: hidden;
+position: relative;
+}
+
+/* Animated background orbs */
+.bg {
+position: fixed;
+inset: 0;
+z-index: 0;
+overflow: hidden;
+pointer-events: none;
+}
+
+.orb {
+position: absolute;
+border-radius: 50%;
+filter: blur(80px);
+opacity: 0.55;
+animation: drift 18s ease-in-out infinite alternate;
+}
+
+.orb-1 {
+width: 500px; height: 500px;
+background: radial-gradient(circle, #1a3a8f, #0d1f4f);
+top: -100px; left: -100px;
+animation-duration: 20s;
+}
+
+.orb-2 {
+width: 400px; height: 400px;
+background: radial-gradient(circle, #6e1a8f, #3d0f52);
+top: 30%; right: -80px;
+animation-duration: 15s;
+animation-delay: -5s;
+}
+
+.orb-3 {
+width: 350px; height: 350px;
+background: radial-gradient(circle, #0f4f3a, #062b20);
+bottom: 5%; left: 20%;
+animation-duration: 22s;
+animation-delay: -10s;
+}
+
+.orb-4 {
+width: 300px; height: 300px;
+background: radial-gradient(circle, #4f2f0f, #2b1906);
+top: 55%; left: -50px;
+animation-duration: 17s;
+animation-delay: -3s;
+}
+
+@keyframes drift {
+0%   { transform: translate(0, 0) scale(1); }
+33%  { transform: translate(40px, -30px) scale(1.05); }
+66%  { transform: translate(-20px, 40px) scale(0.97); }
+100% { transform: translate(30px, 20px) scale(1.03); }
+}
+
+/* Glass mixin */
+.glass {
+background: var(–glass-bg);
+backdrop-filter: blur(28px) saturate(1.8);
+-webkit-backdrop-filter: blur(28px) saturate(1.8);
+border: 1px solid var(–glass-border);
+box-shadow: var(–glass-shadow), inset 0 1px 0 var(–glass-shine);
+border-radius: 20px;
+}
+
+/* Layout */
+.content {
+position: relative;
+z-index: 1;
+width: 100%;
+max-width: 480px;
+display: flex;
+flex-direction: column;
+align-items: center;
 }
 
 header {
 width: 100%;
-max-width: 480px;
 display: flex;
 justify-content: space-between;
-align-items: flex-end;
-margin-bottom: 2.5rem;
+align-items: center;
+margin-bottom: 2rem;
 }
 
 header h1 {
 font-family: ‘DM Serif Display’, serif;
 font-size: 1.5rem;
 font-weight: 400;
-letter-spacing: -0.01em;
 color: var(–text-primary);
-}
-
-.header-right {
-font-size: 0.8rem;
-color: var(–text-secondary);
-font-weight: 300;
+letter-spacing: -0.01em;
 }
 
 .direction-btn {
-background: var(–card-bg);
-border: 1px solid var(–border);
-color: var(–text-secondary);
+background: rgba(255,255,255,0.1);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border: 1px solid rgba(255,255,255,0.2);
+box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 2px 8px rgba(0,0,0,0.3);
+color: var(–text-primary);
 font-family: ‘DM Sans’, sans-serif;
 font-size: 0.75rem;
 font-weight: 500;
-padding: 0.4rem 0.85rem;
+padding: 0.45rem 1rem;
 border-radius: 99px;
 cursor: pointer;
-transition: all 0.15s;
+transition: all 0.2s;
 white-space: nowrap;
 }
 
 .direction-btn:hover {
-border-color: var(–accent);
-color: var(–accent);
-background: #f0f4ff;
+background: rgba(255,255,255,0.18);
+border-color: rgba(255,255,255,0.35);
 }
 
+/* Progress */
 .progress-track {
 width: 100%;
-max-width: 480px;
 height: 2px;
-background: var(–border);
+background: rgba(255,255,255,0.1);
 border-radius: 99px;
-margin-bottom: 3rem;
+margin-bottom: 2.5rem;
 overflow: hidden;
 }
 
 .progress-fill {
 height: 100%;
-background: var(–accent);
+background: linear-gradient(90deg, rgba(255,255,255,0.4), rgba(255,255,255,0.8));
 border-radius: 99px;
 transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
 width: 0%;
+box-shadow: 0 0 8px rgba(255,255,255,0.5);
 }
 
-.card-wrapper {
-width: 100%;
-max-width: 480px;
-margin-bottom: 1.5rem;
-}
+/* Card */
+.card-wrapper { width: 100%; margin-bottom: 1.25rem; }
 
 .card {
 width: 100%;
 min-height: 240px;
-background: var(–card-bg);
-border-radius: 16px;
-border: 1px solid var(–border);
-box-shadow: var(–shadow);
 cursor: pointer;
 display: flex;
 flex-direction: column;
@@ -115,21 +182,54 @@ align-items: center;
 justify-content: center;
 padding: 2.5rem 2rem;
 position: relative;
-transition: box-shadow 0.2s, transform 0.15s;
+transition: box-shadow 0.25s, transform 0.2s;
 user-select: none;
 -webkit-tap-highlight-color: transparent;
+/* Glass */
+background: rgba(255,255,255,0.07);
+backdrop-filter: blur(40px) saturate(2);
+-webkit-backdrop-filter: blur(40px) saturate(2);
+border: 1px solid rgba(255,255,255,0.18);
+box-shadow: var(–glass-shadow), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.1);
+border-radius: 24px;
+/* Inner refraction highlight */
+overflow: hidden;
 }
 
-.card:hover { box-shadow: var(–shadow-hover); transform: translateY(-1px); }
-.card:active { transform: translateY(0); box-shadow: var(–shadow); }
+/* Top specular highlight */
+.card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 10%; right: 10%;
+height: 1px;
+background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+border-radius: 99px;
+}
+
+/* Side refraction */
+.card::after {
+content: ‘’;
+position: absolute;
+top: 15%; bottom: 15%;
+left: 0;
+width: 1px;
+background: linear-gradient(180deg, transparent, rgba(255,255,255,0.15), transparent);
+}
+
+.card:hover {
+box-shadow: var(–glass-shadow-hover), inset 0 1px 0 rgba(255,255,255,0.3);
+transform: translateY(-2px) scale(1.005);
+}
+
+.card:active { transform: translateY(0) scale(1); }
 
 .card-side-label {
 position: absolute;
 top: 1.1rem;
 left: 1.4rem;
-font-size: 0.68rem;
+font-size: 0.66rem;
 font-weight: 500;
-letter-spacing: 0.12em;
+letter-spacing: 0.14em;
 text-transform: uppercase;
 color: var(–text-light);
 }
@@ -138,7 +238,7 @@ color: var(–text-light);
 position: absolute;
 bottom: 1.1rem;
 right: 1.4rem;
-font-size: 0.7rem;
+font-size: 0.68rem;
 color: var(–text-light);
 font-weight: 300;
 }
@@ -148,10 +248,7 @@ text-align: center;
 transition: opacity 0.12s, transform 0.12s;
 }
 
-.card-content.hiding {
-opacity: 0;
-transform: scale(0.96);
-}
+.card-content.hiding { opacity: 0; transform: scale(0.95); }
 
 .word-main {
 font-family: ‘DM Serif Display’, serif;
@@ -159,6 +256,7 @@ font-size: clamp(2rem, 7vw, 2.8rem);
 line-height: 1.15;
 color: var(–text-primary);
 margin-bottom: 0.5rem;
+text-shadow: 0 2px 20px rgba(255,255,255,0.1);
 }
 
 .word-main.is-latin { font-style: italic; }
@@ -171,13 +269,13 @@ font-style: italic;
 font-family: ‘DM Serif Display’, serif;
 }
 
+/* Score buttons */
 .score-row {
 width: 100%;
-max-width: 480px;
 display: grid;
 grid-template-columns: 1fr 1fr;
 gap: 0.75rem;
-margin-bottom: 2rem;
+margin-bottom: 1.25rem;
 opacity: 0;
 pointer-events: none;
 transform: translateY(6px);
@@ -188,47 +286,69 @@ transition: opacity 0.25s, transform 0.25s;
 
 .score-btn {
 padding: 0.75rem;
-border-radius: 10px;
-border: 1px solid var(–border);
-background: var(–card-bg);
+border-radius: 14px;
 font-family: ‘DM Sans’, sans-serif;
 font-size: 0.85rem;
 font-weight: 500;
 cursor: pointer;
-transition: all 0.15s;
+transition: all 0.2s;
+background: rgba(255,255,255,0.07);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border: 1px solid rgba(255,255,255,0.15);
+box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 2px 8px rgba(0,0,0,0.2);
 color: var(–text-secondary);
 }
 
-.score-btn.btn-correct:hover { background: #f0faf5; border-color: #a8dfc1; color: var(–green); }
-.score-btn.btn-wrong:hover   { background: #fdf3f2; border-color: #f0b8b3; color: var(–red); }
+.score-btn.btn-correct:hover {
+background: rgba(48, 209, 88, 0.15);
+border-color: rgba(48, 209, 88, 0.4);
+color: var(–green);
+box-shadow: inset 0 1px 0 rgba(48,209,88,0.2), 0 4px 16px rgba(48,209,88,0.15);
+}
 
+.score-btn.btn-wrong:hover {
+background: rgba(255, 69, 58, 0.15);
+border-color: rgba(255, 69, 58, 0.4);
+color: var(–red);
+box-shadow: inset 0 1px 0 rgba(255,69,58,0.2), 0 4px 16px rgba(255,69,58,0.15);
+}
+
+/* Nav */
 .nav-row {
 width: 100%;
-max-width: 480px;
 display: flex;
 align-items: center;
 justify-content: space-between;
-margin-bottom: 2.5rem;
+margin-bottom: 1.5rem;
 }
 
 .nav-btn {
-background: none;
-border: none;
-padding: 0.5rem 0.75rem;
+background: rgba(255,255,255,0.07);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border: 1px solid rgba(255,255,255,0.14);
+box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+padding: 0.5rem 1rem;
 cursor: pointer;
 color: var(–text-secondary);
 font-family: ‘DM Sans’, sans-serif;
 font-size: 0.85rem;
 font-weight: 500;
-border-radius: 8px;
+border-radius: 10px;
 transition: all 0.15s;
 display: flex;
 align-items: center;
 gap: 0.4rem;
 }
 
-.nav-btn:hover:not(:disabled) { background: var(–border); color: var(–text-primary); }
-.nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+.nav-btn:hover:not(:disabled) {
+background: rgba(255,255,255,0.13);
+color: var(–text-primary);
+border-color: rgba(255,255,255,0.25);
+}
+
+.nav-btn:disabled { opacity: 0.2; cursor: not-allowed; }
 
 .nav-counter {
 font-size: 0.82rem;
@@ -236,15 +356,15 @@ color: var(–text-secondary);
 letter-spacing: 0.04em;
 }
 
+/* Bottom row */
 .bottom-row {
 width: 100%;
-max-width: 480px;
 display: flex;
 align-items: center;
 justify-content: space-between;
 gap: 0.6rem;
 flex-wrap: wrap;
-margin-bottom: 2.5rem;
+margin-bottom: 2rem;
 }
 
 .stats-mini {
@@ -254,49 +374,56 @@ font-size: 0.78rem;
 color: var(–text-secondary);
 }
 
-.stat-item { display: flex; align-items: center; gap: 0.35rem; }
+.stat-item { display: flex; align-items: center; gap: 0.4rem; }
 .stat-dot { width: 7px; height: 7px; border-radius: 50%; }
-.stat-dot.green { background: var(–green); }
-.stat-dot.red   { background: var(–red); }
+.stat-dot.green { background: var(–green); box-shadow: 0 0 6px var(–green); }
+.stat-dot.red   { background: var(–red);   box-shadow: 0 0 6px var(–red); }
 
-.shuffle-btn {
-background: none;
-border: 1px solid var(–border);
+.action-btn {
+background: rgba(255,255,255,0.07);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border: 1px solid rgba(255,255,255,0.14);
+box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
 color: var(–text-secondary);
 font-family: ‘DM Sans’, sans-serif;
 font-size: 0.8rem;
 font-weight: 500;
 padding: 0.45rem 0.9rem;
-border-radius: 8px;
+border-radius: 10px;
 cursor: pointer;
-transition: all 0.15s;
+transition: all 0.2s;
 display: flex;
 align-items: center;
 gap: 0.35rem;
 }
 
-.shuffle-btn:hover { background: var(–card-bg); border-color: #ccc; color: var(–text-primary); box-shadow: var(–shadow); }
+.action-btn:hover {
+background: rgba(255,255,255,0.13);
+border-color: rgba(255,255,255,0.25);
+color: var(–text-primary);
+}
 
-.shuffle-btn.active {
-background: #fef0ee;
-border-color: #f0b8b3;
+.action-btn.active {
+background: rgba(255, 69, 58, 0.15);
+border-color: rgba(255, 69, 58, 0.4);
 color: var(–red);
+box-shadow: inset 0 1px 0 rgba(255,69,58,0.2), 0 4px 16px rgba(255,69,58,0.1);
 }
 
-.shuffle-btn.active:hover {
-background: #fce8e6;
-border-color: var(–red);
-box-shadow: none;
+.action-btn.active:hover {
+background: rgba(255, 69, 58, 0.22);
 }
 
+/* List toggle */
 .list-toggle {
 background: none;
 border: none;
 font-family: ‘DM Sans’, sans-serif;
-font-size: 0.78rem;
+font-size: 0.75rem;
 color: var(–text-light);
 cursor: pointer;
-letter-spacing: 0.06em;
+letter-spacing: 0.08em;
 text-transform: uppercase;
 padding: 0;
 margin-bottom: 1rem;
@@ -305,15 +432,17 @@ transition: color 0.15s;
 
 .list-toggle:hover { color: var(–text-secondary); }
 
+/* Word list */
 .word-list {
 display: none;
 width: 100%;
-max-width: 480px;
-background: var(–card-bg);
-border: 1px solid var(–border);
-border-radius: 12px;
+background: rgba(255,255,255,0.06);
+backdrop-filter: blur(30px);
+-webkit-backdrop-filter: blur(30px);
+border: 1px solid rgba(255,255,255,0.14);
+box-shadow: var(–glass-shadow), inset 0 1px 0 rgba(255,255,255,0.15);
+border-radius: 16px;
 overflow: hidden;
-box-shadow: var(–shadow);
 }
 
 .word-list.open { display: block; }
@@ -321,24 +450,24 @@ box-shadow: var(–shadow);
 .word-list table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
 
 .word-list th {
-padding: 0.65rem 1.1rem;
+padding: 0.7rem 1.1rem;
 text-align: left;
 font-weight: 500;
-font-size: 0.7rem;
+font-size: 0.68rem;
 letter-spacing: 0.1em;
 text-transform: uppercase;
 color: var(–text-light);
-border-bottom: 1px solid var(–border);
+border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .word-list td {
-padding: 0.55rem 1.1rem;
-border-bottom: 1px solid var(–border);
+padding: 0.6rem 1.1rem;
+border-bottom: 1px solid rgba(255,255,255,0.06);
 color: var(–text-primary);
 }
 
 .word-list tr:last-child td { border-bottom: none; }
-.word-list tr:hover td { background: var(–bg); }
+.word-list tr:hover td { background: rgba(255,255,255,0.04); }
 
 .word-list td:first-child {
 font-family: ‘DM Serif Display’, serif;
@@ -349,85 +478,96 @@ font-size: 0.95rem;
 .pill {
 display: inline-flex;
 align-items: center;
-font-size: 0.7rem;
+font-size: 0.68rem;
 font-weight: 500;
-padding: 0.18rem 0.5rem;
+padding: 0.2rem 0.55rem;
 border-radius: 99px;
 }
 
-.pill.known  { background: #eaf7f0; color: var(–green); }
-.pill.review { background: #fef0ee; color: var(–red); }
-.pill.unseen { background: var(–bg); color: var(–text-light); }
+.pill.known  { background: rgba(48,209,88,0.15);  color: var(–green); border: 1px solid rgba(48,209,88,0.3); }
+.pill.review { background: rgba(255,69,58,0.15);  color: var(–red);   border: 1px solid rgba(255,69,58,0.3); }
+.pill.unseen { background: rgba(255,255,255,0.05); color: var(–text-light); border: 1px solid rgba(255,255,255,0.1); }
 
 @keyframes fade-up {
-from { opacity: 0; transform: translateY(8px); }
+from { opacity: 0; transform: translateY(10px); }
 to   { opacity: 1; transform: translateY(0); }
 }
-.entering { animation: fade-up 0.18s ease both; }
+.entering { animation: fade-up 0.2s ease both; }
 </style>
 
 </head>
 <body>
 
-<header>
-  <h1>Vocabula Latina</h1>
-  <button class="direction-btn" id="directionBtn" onclick="toggleDirection()">Latin → English</button>
-</header>
-
-<div class="progress-track">
-  <div class="progress-fill" id="progressFill"></div>
+<div class="bg">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
 </div>
 
-<div class="card-wrapper">
-  <div class="card" id="card" onclick="flipCard()">
-    <div class="card-side-label" id="sideLabel">Latin</div>
-    <div class="card-content" id="cardContent">
-      <div class="word-main is-latin" id="wordMain">—</div>
-      <div class="word-sub" id="wordSub"></div>
+<div class="content">
+
+  <header>
+    <h1>Vocabula Latina</h1>
+    <button class="direction-btn" id="directionBtn" onclick="toggleDirection()">Latin → English</button>
+  </header>
+
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <div class="card-wrapper">
+    <div class="card" id="card" onclick="flipCard()">
+      <div class="card-side-label" id="sideLabel">Latin</div>
+      <div class="card-content" id="cardContent">
+        <div class="word-main is-latin" id="wordMain">—</div>
+        <div class="word-sub" id="wordSub"></div>
+      </div>
+      <div class="card-hint" id="cardHint">tap to reveal</div>
     </div>
-    <div class="card-hint" id="cardHint">tap to reveal</div>
   </div>
-</div>
 
-<div class="score-row" id="scoreRow">
-  <button class="score-btn btn-wrong" onclick="markCard(false)">Still learning</button>
-  <button class="score-btn btn-correct" onclick="markCard(true)">Got it ✓</button>
-</div>
-
-<div class="nav-row">
-  <button class="nav-btn" id="prevBtn" onclick="prevCard()">
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    Prev
-  </button>
-  <div class="nav-counter" id="counter">1 / 19</div>
-  <button class="nav-btn" id="nextBtn" onclick="nextCard()">
-    Next
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2L10 7L5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </button>
-</div>
-
-<div class="bottom-row">
-  <div class="stats-mini">
-    <div class="stat-item"><div class="stat-dot green"></div><span id="knownCount">0</span> known</div>
-    <div class="stat-item"><div class="stat-dot red"></div><span id="reviewCount">0</span> review</div>
+  <div class="score-row" id="scoreRow">
+    <button class="score-btn btn-wrong" onclick="markCard(false)">Still learning</button>
+    <button class="score-btn btn-correct" onclick="markCard(true)">Got it ✓</button>
   </div>
-  <button class="shuffle-btn" onclick="shuffleCards()">
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 4h7.5M1 9h7.5M9 2l3 2-3 2M9 7l3 2-3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    Shuffle
-  </button>
-  <button class="shuffle-btn" id="reviewModeBtn" onclick="toggleReviewMode()">
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1a5.5 5.5 0 100 11A5.5 5.5 0 006.5 1zM6.5 4v3l2 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    Review weak
-  </button>
-</div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="prevBtn" onclick="prevCard()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Prev
+    </button>
+    <div class="nav-counter" id="counter">1 / 19</div>
+    <button class="nav-btn" id="nextBtn" onclick="nextCard()">
+      Next
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2L10 7L5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <div class="bottom-row">
+    <div class="stats-mini">
+      <div class="stat-item"><div class="stat-dot green"></div><span id="knownCount">0</span> known</div>
+      <div class="stat-item"><div class="stat-dot red"></div><span id="reviewCount">0</span> review</div>
+    </div>
+    <button class="action-btn" onclick="shuffleCards()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 4h7.5M1 9h7.5M9 2l3 2-3 2M9 7l3 2-3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Shuffle
+    </button>
+    <button class="action-btn" id="reviewModeBtn" onclick="toggleReviewMode()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1a5.5 5.5 0 100 11A5.5 5.5 0 006.5 1zM6.5 4v3l2 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Review weak
+    </button>
+  </div>
 
 <button class="list-toggle" onclick="toggleList()" id="listToggle">All words ↓</button>
 
-<div class="word-list" id="wordList">
-  <table>
-    <thead><tr><th>Latin</th><th>English</th><th>Status</th></tr></thead>
-    <tbody id="wordListBody"></tbody>
-  </table>
+  <div class="word-list" id="wordList">
+    <table>
+      <thead><tr><th>Latin</th><th>English</th><th>Status</th></tr></thead>
+      <tbody id="wordListBody"></tbody>
+    </table>
+  </div>
+
 </div>
 
 <script>
@@ -457,8 +597,7 @@ let deck = [...vocab];
 let current = 0;
 let isFlipped = false;
 let statuses = {};
-let latinFirst = true; // true = Latin→English, false = English→Latin
-
+let latinFirst = true;
 let reviewMode = false;
 
 function toggleReviewMode() {
@@ -500,10 +639,10 @@ function shuffle(arr) {
 }
 
 function applyContent(latin, english, flipped) {
-  const main = document.getElementById('wordMain');
-  const sub  = document.getElementById('wordSub');
-  const label = document.getElementById('sideLabel');
-  const hint  = document.getElementById('cardHint');
+  const main    = document.getElementById('wordMain');
+  const sub     = document.getElementById('wordSub');
+  const label   = document.getElementById('sideLabel');
+  const hint    = document.getElementById('cardHint');
   const content = document.getElementById('cardContent');
 
   const showLatinFirst = latinFirst ? !flipped : flipped;
@@ -524,7 +663,6 @@ function applyContent(latin, english, flipped) {
     if (!flipped) hint.textContent = 'tap to reveal';
   }
 
-  // Trigger entering animation
   content.classList.remove('entering');
   void content.offsetWidth;
   content.classList.add('entering');
@@ -571,7 +709,6 @@ function flipCard() {
 
 function nextCard() { if (current < deck.length - 1) { current++; render(true); } }
 function prevCard() { if (current > 0) { current--; render(true); } }
-
 function shuffleCards() { shuffle(deck); current = 0; render(true); }
 
 function markCard(known) {
