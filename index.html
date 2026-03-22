@@ -549,7 +549,7 @@ let deck = [...vocab];
 let current = 0;
 let isFlipped = false;
 let statuses = JSON.parse(localStorage.getItem('latin-statuses') || '{}');
-let latinFirst = true;
+let latinFirst = localStorage.getItem('latin-direction') !== 'false';
 let reviewMode = false;
 
 function saveStatuses() {
@@ -583,6 +583,7 @@ function toggleReviewMode() {
 
 function toggleDirection() {
   latinFirst = !latinFirst;
+  localStorage.setItem('latin-direction', latinFirst);
   document.getElementById('directionBtn').textContent = latinFirst ? 'Latin → English' : 'English → Latin';
   render(false);
 }
@@ -707,6 +708,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'n' || e.key === 'N') { if (isFlipped) markCard(false); }
 });
 
+document.getElementById('directionBtn').textContent = latinFirst ? 'Latin → English' : 'English → Latin';
 render(false);
 </script>
 
