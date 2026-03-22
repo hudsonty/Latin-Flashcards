@@ -548,9 +548,13 @@ const vocab = [
 let deck = [...vocab];
 let current = 0;
 let isFlipped = false;
-let statuses = {};
+let statuses = JSON.parse(localStorage.getItem('latin-statuses') || '{}');
 let latinFirst = true;
 let reviewMode = false;
+
+function saveStatuses() {
+  localStorage.setItem('latin-statuses', JSON.stringify(statuses));
+}
 
 function toggleReviewMode() {
   const weak = vocab.filter(w => statuses[w.latin] === 'review');
@@ -665,6 +669,7 @@ function shuffleCards() { shuffle(deck); current = 0; render(true); }
 
 function markCard(known) {
   statuses[deck[current].latin] = known ? 'known' : 'review';
+  saveStatuses();
   updateStats(); renderWordList(); updateProgress();
   setTimeout(() => { if (current < deck.length - 1) nextCard(); }, 200);
 }
